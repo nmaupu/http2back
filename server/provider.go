@@ -3,7 +3,6 @@ package server
 import (
 	"fmt"
 	"io"
-	"log"
 	"os"
 )
 
@@ -21,8 +20,7 @@ func (f Filesystem) Copy(in io.Reader, name string) string {
 	out, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0644)
 	defer out.Close()
 	if err != nil {
-		log.Println("Error: ", err)
-		return ""
+		panic(fmt.Sprintf("Error: %s", err))
 	}
 
 	io.Copy(out, in)

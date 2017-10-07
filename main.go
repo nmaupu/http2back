@@ -7,6 +7,6 @@ import (
 func main() {
 	addr := "127.0.0.1"
 	port := 8080
-	provider := server.Filesystem{"/tmp"}
+	provider := server.Filesystem{"/tmp/test"}
 	server.Start(&port, &addr, provider)
 }
