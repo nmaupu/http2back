@@ -2,25 +2,26 @@ package server
 
 import (
 	"fmt"
-	"io"
 	"log"
 	"math/rand"
 	"net/http"
-	"os"
 	"time"
 )
 
+// Globals
+var provider Provider = nil
+
+// HTTP API
 func push(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Printf("Calling %s on %s", r.Method, r.URL.Path)
 	if r.Method == "PUT" || r.Method == "POST" {
-		r.ParseMultipartForm(32 << 20)
-		file_in, handler, err := r.FormFile("file")
-		defer file_in.Close()
+		r.ParseMultipartForm(32 << 20) // 32768
+		in, handler, err := r.FormFile("file")
+		defer in.Close()
 		if err != nil {
 			log.Println("Error: ", err)
 			return
@@ -28,20 +29,20 @@ func push(w http.ResponseWriter, r *http.Request) {
 
 		t := time.Now()
 		// Unique filename
-		filename := fmt.Sprintf("/tmp/%s-%s.%06d", handler.Filename, t.Format("20060102_150405"), rand.Intn(100000))
-		file_out, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0644)
-		defer file_out.Close()
-		if err != nil {
-			log.Println("Error: ", err)
-			return
-		}
-
-		io.Copy(file_out, file_in)
+		name := fmt.Sprintf("%s-%s.%06d", handler.Filename, t.Format("20060102_150405"), rand.Intn(100000))
+		ret := provider.Copy(in, name)
+		log.Printf("Called : %s %s - file %s -> %s", r.Method, r.URL.Path, handler.Filename, ret)
 	}
 }
 
-func Start(port *int, bind_addr *string) {
+// Starting the HTTP server
+func Start(port *int, bind_addr *string, p Provider) {
+	provider = p
+
+	log.Printf("Starting http server on %s:%d using provider %s", *bind_addr, *port, p)
+
 	http.HandleFunc("/push", push)
+
 	err := http.ListenAndServe(fmt.Sprintf("%s:%d", *bind_addr, *port), nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
