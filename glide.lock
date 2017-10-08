@@ -1,5 +1,5 @@
-hash: c91aeb4ce4faa0e2e31b13f3764a21b126ca24a182cb653c9ab0326c2e465695
-updated: 2017-10-08T16:52:12.483574749+02:00
+hash: 8f400a0880c9f59ff38414074ee28ba9b5ab78ff85f4ce9a004df8f585e0b0fe
+updated: 2017-10-09T00:12:36.527862229+02:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
@@ -14,10 +14,10 @@ imports:
   - json/parser
   - json/scanner
   - json/token
-- name: github.com/inconshreveable/mousetrap
-  version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/jawher/mow.cli
   version: 89bd73e5017374498afb615659500c3559ff42b3
+- name: github.com/jlaffaye/ftp
+  version: 299b7ff5b6096588cceca2edc1fc9f557002fb85
 - name: github.com/magiconair/properties
   version: 8d7837e64d3c1ee4e54a880c5a920ab4316fc90a
 - name: github.com/mitchellh/mapstructure
@@ -25,17 +25,15 @@ imports:
 - name: github.com/pelletier/go-toml
   version: 2009e44b6f182e34d8ce081ac2767622937ea3d4
 - name: github.com/spf13/afero
-  version: 3de492c3cda9570c77bc1f495857bfbf4b760efd
+  version: e67d870304c4bca21331b02f414f970df13aa694
   subpackages:
   - mem
 - name: github.com/spf13/cast
   version: acbeb36b902d72a7a4c18e8f3241075e7ab763e4
-- name: github.com/spf13/cobra
-  version: b78744579491c1ceeaaa3b40205e56b0591b93a3
 - name: github.com/spf13/jwalterweatherman
   version: 12bd96e66386c1960ab0f74ced1362f66f552f7b
 - name: github.com/spf13/pflag
-  version: 2c300e72a98b4351617d9b927d2d2860ece8ee24
+  version: a9789e855c7696159b7db0db7f440b449edf2b31
 - name: github.com/spf13/viper
   version: 25b30aa063fc18e48662b86996252eabdcf2f0c7
 - name: golang.org/x/sys

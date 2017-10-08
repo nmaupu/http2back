@@ -30,8 +30,8 @@ func main() {
 
 	app.Action = func() {
 		var (
-			vAddr, vProvider, vDest string
-			vPort                   int
+			vAddr, vProvider, vDest, vUsername, vPassword string
+			vPort                                         int
 		)
 		viper.SetConfigName(appName)
 		viper.AddConfigPath(fmt.Sprintf("/etc/%s/", appName))
@@ -56,6 +56,19 @@ func main() {
 			case "filesystem":
 				vDest = viper.GetString("provider.dest")
 				providerFunc = func() server.Provider { return server.Filesystem{vDest} }
+			case "ftp":
+				vAddr = viper.GetString("provider.host")
+				vUsername = viper.GetString("provider.username")
+				vPassword = viper.GetString("provider.password")
+				vDest = viper.GetString("provider.dest")
+				providerFunc = func() server.Provider {
+					return server.Ftp{
+						Addr:     vAddr,
+						Username: vUsername,
+						Password: vPassword,
+						DestDir:  vDest,
+					}
+				}
 			default:
 				vProvider = "filesystem"
 				vDest = "/tmp"
