@@ -1,0 +1,8 @@
+package: github.com/nmaupu/http2back
+import:
+- package: github.com/spf13/cobra
+  version: b78744579491c1ceeaaa3b40205e56b0591b93a3
+- package: github.com/Sirupsen/logrus
+  version: ^1.0.3
+- package: github.com/spf13/viper
+  version: ^1.0.0
