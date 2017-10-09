@@ -3,7 +3,14 @@ bind_address: localhost
 port: 9090
 provider:
   name: filesystem
-  dest: /tmp/test
+  dest: /tmp
+#provider:
+#  name: s3
+#  dest: /
+#  bucket: my-bucket
+#  region: eu-west-1
+#  aws-access-key-id: my-access-key-id
+#  aws-secret-access-key: my-secret-access-key
 #provider:
 #  name: ftp
 #  dest: /

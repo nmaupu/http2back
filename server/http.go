@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/nmaupu/http2back/provider"
 	"log"
 	"math/rand"
 	"net/http"
@@ -10,7 +11,7 @@ import (
 )
 
 // Globals
-var getProv func() Provider = nil
+var getProv func() provider.Provider = nil
 
 // HTTP API
 func handleRequest(w http.ResponseWriter, r *http.Request) {
@@ -38,10 +39,10 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "PUT" || r.Method == "POST" {
 		r.ParseMultipartForm(32 << 20)
 		in, handler, err := r.FormFile("file")
-		defer in.Close()
 		if err != nil {
 			panic(fmt.Sprintf("Error: %s", err))
 		}
+		defer in.Close()
 
 		// Unique filename
 		t := time.Now()
@@ -60,7 +61,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 // Starting the HTTP server
-func Start(port *int, bind_addr *string, getProvider func() Provider) {
+func Start(port *int, bind_addr *string, getProvider func() provider.Provider) {
 	getProv = getProvider
 
 	log.Printf("Starting http server on %s:%d using provider %s", *bind_addr, *port, getProv())
