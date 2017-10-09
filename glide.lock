@@ -1,5 +1,5 @@
-hash: d7c10f70a9d5d53704d0ea813650fe9a16585ec9ae03ff799b5a0e750bad7531
-updated: 2017-10-09T16:01:27.766016385+02:00
+hash: c29436056156166978bac588958b8ecdc9a50b6ea421a82bbc1f211b8dbc3f98
+updated: 2017-10-09T22:27:48.21778509+02:00
 imports:
 - name: github.com/aws/aws-sdk-go
   version: 760741802ad40f49ae9fc4a69ef6706d2527d62e
@@ -9,9 +9,16 @@ imports:
   - aws/awsutil
   - aws/client
   - aws/client/metadata
+  - aws/corehandlers
   - aws/credentials
+  - aws/credentials/ec2rolecreds
+  - aws/credentials/endpointcreds
+  - aws/credentials/stscreds
+  - aws/defaults
+  - aws/ec2metadata
   - aws/endpoints
   - aws/request
+  - aws/session
   - aws/signer/v4
   - internal/shareddefaults
   - private/protocol
@@ -21,6 +28,9 @@ imports:
   - private/protocol/restxml
   - private/protocol/xml/xmlutil
   - service/s3
+  - service/s3/s3iface
+  - service/s3/s3manager
+  - service/sts
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
 - name: github.com/go-ini/ini
@@ -60,6 +70,8 @@ imports:
   version: a9789e855c7696159b7db0db7f440b449edf2b31
 - name: github.com/spf13/viper
   version: 25b30aa063fc18e48662b86996252eabdcf2f0c7
+- name: github.com/tj/go-dropbox
+  version: 2de702dc3e925adbf993ddd2192cebd7a24ae1a1
 - name: golang.org/x/sys
   version: ebfc5b4631820b793c9010c87fd8fef0f39eb082
   subpackages:

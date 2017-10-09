@@ -87,6 +87,15 @@ func main() {
 						Token:              vToken,
 					}
 				}
+			case "dropbox":
+				vToken = viper.GetString("provider.token")
+				vDest = viper.GetString("provider.dest")
+				providerFunc = func() provider.Provider {
+					return provider.Dropbox{
+						AccessToken: vToken,
+						Dest:        vDest,
+					}
+				}
 			default:
 				vProvider = "filesystem"
 				vDest = "/tmp"

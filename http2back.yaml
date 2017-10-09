@@ -5,6 +5,10 @@ provider:
   name: filesystem
   dest: /tmp
 #provider:
+#  name: dropbox
+#  token: <my api token>
+#  dest: /myfiles
+#provider:
 #  name: s3
 #  dest: /
 #  bucket: my-bucket
