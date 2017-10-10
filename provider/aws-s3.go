@@ -49,9 +49,10 @@ func (s AwsS3) Copy(in io.Reader, name string) string {
 	uploader := s3manager.NewUploader(sess)
 
 	// Upload
+	destFilename := fmt.Sprintf("%s/%s", s.DestDir, name)
 	result, err := uploader.Upload(&s3manager.UploadInput{
 		Bucket: &s.Bucket,
-		Key:    &name,
+		Key:    &destFilename,
 		Body:   in,
 	})
 	if err != nil {
