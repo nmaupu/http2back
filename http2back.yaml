@@ -1,5 +1,5 @@
 # http2back config sample
-bind_address: localhost
+bind_address: 0.0.0.0
 port: 9090
 provider:
   name: filesystem

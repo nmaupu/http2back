@@ -17,5 +17,6 @@
 vendor/
 
 http2back
+http2back_linux-amd64
 *.swp
 *.swo
