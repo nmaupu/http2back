@@ -11,14 +11,14 @@ var (
 )
 
 type Dropbox struct {
-	AccessToken, Dest string
+	AccessToken, DestDir string
 }
 
 func (d Dropbox) Copy(in io.Reader, name string) string {
 	client := dropbox.New(dropbox.NewConfig(d.AccessToken))
 
 	out, err := client.Files.Upload(&dropbox.UploadInput{
-		Path:       fmt.Sprintf("%s/%s", d.Dest, name),
+		Path:       fmt.Sprintf("%s/%s", d.DestDir, name),
 		Mode:       dropbox.WriteModeAdd,
 		AutoRename: false,
 		Mute:       false,
@@ -32,5 +32,5 @@ func (d Dropbox) Copy(in io.Reader, name string) string {
 }
 
 func (d Dropbox) String() string {
-	return fmt.Sprintf("Dropbox (%s)", d.Dest)
+	return fmt.Sprintf("Dropbox (%s)", d.DestDir)
 }

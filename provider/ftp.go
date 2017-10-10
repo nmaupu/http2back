@@ -30,7 +30,7 @@ func (f Ftp) Copy(in io.Reader, name string) string {
 	}
 
 	// Upload file
-	remoteFilename := fmt.Sprintf("%s%s", f.DestDir, name)
+	remoteFilename := fmt.Sprintf("%s/%s", f.DestDir, name)
 	if err = ftpConn.Stor(remoteFilename, in); err != nil {
 		panic(fmt.Sprintf("Unable to upload file - %s", err))
 	}
@@ -39,5 +39,5 @@ func (f Ftp) Copy(in io.Reader, name string) string {
 }
 
 func (f Ftp) String() string {
-	return fmt.Sprintf("Ftp (ftp://%s@%s/%s)", f.Username, f.Addr, f.DestDir)
+	return fmt.Sprintf("Ftp (ftp://%s@%s%s)", f.Username, f.Addr, f.DestDir)
 }
