@@ -4,6 +4,19 @@ import (
 	"github.com/nmaupu/http2back/cli"
 )
 
+const (
+	AppName = "http2back"
+	AppDesc = "Push to backends over HTTP"
+)
+
+var (
+	AppVersion string
+)
+
 func main() {
-	cli.Process()
+	if AppVersion == "" {
+		AppVersion = "master"
+	}
+
+	cli.Process(AppName, AppDesc, AppVersion)
 }

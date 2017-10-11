@@ -67,6 +67,9 @@ func Start(port *int, bind_addr *string, getProvider func() provider.Provider) {
 	log.Printf("Starting http server on %s:%d using provider %s", *bind_addr, *port, getProv())
 
 	http.HandleFunc("/", handleRequest)
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNoContent)
+	})
 
 	err := http.ListenAndServe(fmt.Sprintf("%s:%d", *bind_addr, *port), nil)
 	if err != nil {

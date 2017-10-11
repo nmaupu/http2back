@@ -1,0 +1,31 @@
+language: go
+go:
+- 1.8
+- 1.7
+sudo: false
+
+before_install:
+  - go get -v github.com/Masterminds/glide
+  - cd $GOPATH/src/github.com/Masterminds/glide && git checkout e73500c735917e39a8b782e0632418ab70250341 && go install && cd -
+
+install:
+  - glide install
+
+script:
+  - make build
+
+before_deploy:
+  - mkdir -p bin_release
+  - GOOS=linux  GOARCH=amd64 go build -o bin_release/http2back_linux-amd64  -ldflags="-X main.AppVersion=$TRAVIS_TAG"
+  - GOOS=darwin GOARCH=amd64 go build -o bin_release/http2back_darwin-amd64 -ldflags="-X main.AppVersion=$TRAVIS_TAG"
+
+deploy:
+  provider: releases
+  api_key:
+    secure: QLjelmxik8O0TDSFjNlcst4q6lWnuU67VEwIAy6E+mew5xbEU0VC1JJ7S8Rr71IxV17lqkQ2wqqMWd+FxaYPn57z+iRuGvKQdutftD1nOcYk0H5tKX8XzOzxKMOrE/GJOQfHzczMeoYwvIL282i4KD23xoj6Vyqc6cITktoRXl5sl6E5soQqit/SRZXqvJBeXtqj4evDsKeKAG6B4nINZsHL2kxL4MtxkcexjwP77m32q+gTYzG3eoIWzkBdrV7tKmY0afcBMISs+pfzFxge8LnBWl996/lGAmiFFxoS1ZqhwwWPAVtAPsCrSQQuHUZrPUBC2ivsisI36/kAb+SLm+Yid9bcPOlf0Bm1c1GElwcM7M9sv0JDbUR/RT95zYhxlDOS6dSH6FBXQb5NhKSNU74fqphazqqgU08MBA4/dedn2LdZOdyGRxcSCm4BNa766Kyl821xaMUy92G6La7tiPGgzeObWIelak5hJTLXfXPG5RWDVm+sW4eR4q5qLhv09SWhuI114IbdQI2hEopTGQ53kZoFGyqduGKtRSvEiUfSFJqsOF6yY84dRThBCC6V7/jERCHeshoLT1AAKsMcJJQWcZPz7ixNs2QLsbq0cCGJoqdn5X2y4ynJPYI68uMrNqd6rY6T9LlFbXitVm7MTRwo/02cWUzuU0EUvOjYnUw=
+  file_glob: true
+  file: bin_release/*
+  skip_cleanup: true
+  on:
+    tags: true
+    go: 1.8

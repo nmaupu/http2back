@@ -8,20 +8,14 @@ import (
 	"os"
 )
 
-const (
-	AppName    = "http2back"
-	AppDesc    = "Push to backends over HTTP"
-	AppVersion = "v0.2"
-)
-
 var (
 	addr *string
 	port *int
 )
 
-func Process() {
-	app := cli.App(AppName, AppDesc)
-	app.Version("v version", fmt.Sprintf("%s %s", AppName, AppVersion))
+func Process(appName, appDesc, appVersion string) {
+	app := cli.App(appName, appDesc)
+	app.Version("v version", fmt.Sprintf("%s version %s", appName, appVersion))
 
 	addr = app.StringOpt("b bind", "127.0.0.1", "Bind address")
 	port = app.IntOpt("p port", 8080, "Port to listen connections from")
