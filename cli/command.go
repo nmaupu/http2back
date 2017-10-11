@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	appName    = "http2back"
-	appDesc    = "Push to backends over HTTP"
-	appVersion = "v0.1"
+	AppName    = "http2back"
+	AppDesc    = "Push to backends over HTTP"
+	AppVersion = "v0.2"
 )
 
 var (
@@ -20,8 +20,8 @@ var (
 )
 
 func Process() {
-	app := cli.App(appName, appDesc)
-	app.Version("v version", fmt.Sprintf("%s %s", appName, appVersion))
+	app := cli.App(AppName, AppDesc)
+	app.Version("v version", fmt.Sprintf("%s %s", AppName, AppVersion))
 
 	addr = app.StringOpt("b bind", "127.0.0.1", "Bind address")
 	port = app.IntOpt("p port", 8080, "Port to listen connections from")

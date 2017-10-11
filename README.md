@@ -25,75 +25,29 @@ glide install && make
 Once configured (see next section), just run the server :
 
 ```
-./http2back
-2017/10/09 23:51:47 Starting http server on localhost:4242 using provider Filesystem (/tmp)
+./http2back filesystem --dest=/tmp
+2017/10/11 11:30:44 Starting http server on 127.0.0.1:8080 using provider Filesystem (tmp)
 ```
 
 Send something using the client of your choice :
 
 ```
-curl -X PUT -F file=@file-42.lol http://localhost:4242/
+curl -X PUT -F file=@file-42.lol http://127.0.0.1:8080/
 ```
 
 
 # Configuration
 
-As for now, configuration can only be done using a config file named http2back.{json, toml, yaml, hcl, properties}.
-This config file has to be present in http2back classpath including : /etc/http2back, $HOME/.http2back or in the current directory.
-Have a look at the sample file at the root of the repository : `http2back.yaml`
-
-Configuration is easy (using yaml for the win):
+Configuration is done using command arguments :
 
 ```
-bind_address: 127.0.0.1
-port: 4242
-provider:
-  name: <provider name>
-  [more provider opts]
+./http2back [--bind=<binding-address>] [--port=<server-port>] COMMAND [OPTS]
 ```
 
-# Providers
-
-## Filesystem
+Each command corresponds to one provider, pop help using :
 
 ```
-provider:
-  name: filesystem
-  dest: /tmp
-```
-
-## FTP
-
-```
-provider:
-  name: ftp
-  dest: /
-  host: host:port
-  username: user
-  password: pass
-```
-
-## AWS S3
-
-```
-provider:
-  name: s3
-  dest: /
-  bucket: my-bucket
-  region: eu-west-1
-  aws-access-key-id: my-access-key-id
-  aws-secret-access-key: my-secret-access-key
-```
-
-## Dropbox
-
-First, you need to create an app and an associated token.
-
-```
-provider:
-  name: dropbox
-  token: <my api token>
-  dest: /myfiles
+./http2back COMMAND help
 ```
 
 # Dependencies
