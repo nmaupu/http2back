@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/nmaupu/http2back.svg?branch=master)](https://travis-ci.org/nmaupu/http2back)
+[![Go Report Card](https://goreportcard.com/badge/github.com/nmaupu/http2back)](https://goreportcard.com/report/github.com/nmaupu/http2back)
+
 # What is http2back
 
 http2back provides a HTTP server to upload files to various backends :
