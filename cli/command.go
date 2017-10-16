@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	addr *string
-	port *int
+	addr           *string
+	port, maxmemmb *int
 )
 
 func Process(appName, appDesc, appVersion string) {
@@ -19,6 +19,7 @@ func Process(appName, appDesc, appVersion string) {
 
 	addr = app.StringOpt("b bind", "127.0.0.1", "Bind address")
 	port = app.IntOpt("p port", 8080, "Port to listen connections from")
+	maxmemmb = app.IntOpt("m maxmemmb", 8, "Max memory allocated (MiB) for buffering a file to the backend")
 
 	app.Command("filesystem fs", "Use filesystem provider", providerFilesystem)
 	app.Command("ftp", "Use FTP provider", providerFtp)
@@ -32,7 +33,7 @@ func providerFilesystem(cmd *cli.Cmd) {
 	dest := cmd.StringOpt("d dest", "/tmp", "Destination directory where to drop files into")
 
 	cmd.Action = func() {
-		server.Start(port, addr, func() provider.Provider {
+		server.Start(port, addr, maxmemmb, func() provider.Provider {
 			return provider.Filesystem{DestDir: *dest}
 		})
 	}
@@ -57,7 +58,7 @@ func providerFtp(cmd *cli.Cmd) {
 	})
 
 	cmd.Action = func() {
-		server.Start(port, addr, func() provider.Provider {
+		server.Start(port, addr, maxmemmb, func() provider.Provider {
 			return provider.Ftp{
 				Addr:     *ftpAddr,
 				Username: *username,
@@ -78,7 +79,7 @@ func providerDropbox(cmd *cli.Cmd) {
 	})
 
 	cmd.Action = func() {
-		server.Start(port, addr, func() provider.Provider {
+		server.Start(port, addr, maxmemmb, func() provider.Provider {
 			return provider.Dropbox{
 				DestDir:     *dest,
 				AccessToken: *accessToken,
@@ -117,7 +118,7 @@ func providerAwsS3(cmd *cli.Cmd) {
 	})
 
 	cmd.Action = func() {
-		server.Start(port, addr, func() provider.Provider {
+		server.Start(port, addr, maxmemmb, func() provider.Provider {
 			return provider.AwsS3{
 				Bucket:             *bucket,
 				DestDir:            *dest,

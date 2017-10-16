@@ -12,6 +12,7 @@ import (
 
 // Globals
 var getProv func() provider.Provider = nil
+var maxMemoryBuffer int64
 
 // HTTP API
 func handleRequest(w http.ResponseWriter, r *http.Request) {
@@ -37,7 +38,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "PUT" || r.Method == "POST" {
-		r.ParseMultipartForm(32 << 20)
+		r.ParseMultipartForm(maxMemoryBuffer) // 8M buffering
 		in, handler, err := r.FormFile("file")
 		if err != nil {
 			panic(fmt.Sprintf("Error: %s", err))
@@ -61,10 +62,11 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 // Starting the HTTP server
-func Start(port *int, bind_addr *string, getProvider func() provider.Provider) {
+func Start(port *int, bind_addr *string, maxMemMB *int, getProvider func() provider.Provider) {
+	maxMemoryBuffer = int64((*maxMemMB) << 20)
 	getProv = getProvider
 
-	log.Printf("Starting http server on %s:%d using provider %s", *bind_addr, *port, getProv())
+	log.Printf("Starting http server on %s:%d using provider %s - Memory per buffer per file: %d MiB\n", *bind_addr, *port, getProv(), *maxMemMB)
 
 	http.HandleFunc("/", handleRequest)
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
