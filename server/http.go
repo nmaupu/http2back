@@ -38,7 +38,15 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "PUT" || r.Method == "POST" {
-		r.ParseMultipartForm(maxMemoryBuffer) // 8M buffering
+		r.ParseMultipartForm(maxMemoryBuffer)
+
+		// Getting extradir parameter
+		extradir := r.Form.Get("extradir")
+		if extradir != "" {
+			extradir = fmt.Sprintf("%s/", extradir)
+		}
+
+		// Get file
 		in, handler, err := r.FormFile("file")
 		if err != nil {
 			panic(fmt.Sprintf("Error: %s", err))
@@ -47,7 +55,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 
 		// Unique filename
 		t := time.Now()
-		name := fmt.Sprintf("%s-%s.%06d", handler.Filename, t.Format("20060102_150405"), rand.Intn(100000))
+		name := fmt.Sprintf("%s%s-%s.%06d", extradir, handler.Filename, t.Format("20060102_150405"), rand.Intn(100000))
 		ret := getProv().Copy(in, name)
 
 		// Send result
