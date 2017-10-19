@@ -91,6 +91,9 @@ func providerDropbox(cmd *cli.Cmd) {
 func providerAwsS3(cmd *cli.Cmd) {
 	bucket := cmd.StringOpt("b bucket", "my-bucket", "Destination bucket")
 	dest := cmd.StringOpt("d dest", "", "Destination directory where to drop files into")
+	endpoint := cmd.StringOpt("e endpoint", "", "Endpoint to use (useful to use a third party S3 compatbiel server like minio)")
+	disableSSL := cmd.BoolOpt("disablessl", false, "Disable SSL support for endpoint")
+	disableCertCheck := cmd.BoolOpt("insecure", false, "Disable endpoint certificate check")
 
 	region := cmd.String(cli.StringOpt{
 		Name:   "r region",
@@ -126,6 +129,9 @@ func providerAwsS3(cmd *cli.Cmd) {
 				AwsAccessKeyId:     *key,
 				AwsSecretAccessKey: *secret,
 				Token:              *token,
+				Endpoint:           *endpoint,
+				DisableSSL:         *disableSSL,
+				DisableCertCheck:   *disableCertCheck,
 			}
 		})
 	}

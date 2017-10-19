@@ -1,12 +1,14 @@
 package provider
 
 import (
+	"crypto/tls"
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"io"
+	"net/http"
 )
 
 var (
@@ -22,9 +24,15 @@ type AwsS3 struct {
 	// .aws/ or env vars will be used
 	// aka. AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
 	AwsAccessKeyId, AwsSecretAccessKey, Token string
+	// Set to use third party servers like minio or a custom Amazon S3 endpoint
+	// To use default, keep uninitialized (empty string)
+	Endpoint string
+	// Wether to enable or to disable SSL support
+	DisableSSL bool
+	// Allow to do "insecure SSL connections (no CA verification)"
+	DisableCertCheck bool
 }
 
-// TODO : implement DestDir support
 func (s AwsS3) Copy(in io.Reader, name string) string {
 	// Credentials ans region handling
 	var awsCreds *credentials.Credentials = nil
@@ -36,7 +44,12 @@ func (s AwsS3) Copy(in io.Reader, name string) string {
 		}
 	}
 
-	awsConfig := aws.NewConfig()
+	awsConfig := &aws.Config{
+		S3ForcePathStyle: aws.Bool(true),
+	}
+
+	awsConfig = awsConfig.WithDisableSSL(s.DisableSSL)
+	awsConfig = awsConfig.WithEndpoint(s.Endpoint)
 	if s.Region != "" {
 		awsConfig = awsConfig.WithRegion(s.Region)
 	}
@@ -46,6 +59,12 @@ func (s AwsS3) Copy(in io.Reader, name string) string {
 
 	// Session creation
 	sess := session.Must(session.NewSession(awsConfig))
+	// Disable certificate check enforcement if asked
+	if !s.DisableSSL && s.DisableCertCheck {
+		sess.Config.HTTPClient.Transport = &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
+	}
 	uploader := s3manager.NewUploader(sess)
 
 	// Upload
@@ -63,5 +82,9 @@ func (s AwsS3) Copy(in io.Reader, name string) string {
 }
 
 func (s AwsS3) String() string {
-	return fmt.Sprintf("AwsS3 (Bucket: %s, Region: %s, Destination: %s)", s.Bucket, s.Region, s.DestDir)
+	if s.Endpoint != "" {
+		return fmt.Sprintf("AwsS3 (Endpoint: %s, Bucket: %s, Region: %s, Destination: %s)", s.Endpoint, s.Bucket, s.Region, s.DestDir)
+	} else {
+		return fmt.Sprintf("AwsS3 (Bucket: %s, Region: %s, Destination: %s)", s.Bucket, s.Region, s.DestDir)
+	}
 }
