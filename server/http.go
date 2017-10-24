@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/nmaupu/http2back/notifier"
 	"github.com/nmaupu/http2back/provider"
 	"log"
 	"math/rand"
@@ -11,8 +12,11 @@ import (
 )
 
 // Globals
-var getProv func() provider.Provider = nil
-var maxMemoryBuffer int64
+var (
+	getProv         func() provider.Provider
+	getNotifs       []func() notifier.Notifier
+	maxMemoryBuffer int64
+)
 
 // HTTP API
 func handleRequest(w http.ResponseWriter, r *http.Request) {
@@ -64,15 +68,30 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 		j, _ := json.Marshal(jr)
 		w.Write(j)
 
+		// Send notifications to all notifiers
+		for _, f := range getNotifs {
+			notif := f()
+			if notif != nil {
+				err = notif.Notify(&notifier.Event{
+					Title:   fmt.Sprintf("http2back - new file available: %s", ret),
+					Message: ret,
+				})
+				if err != nil {
+					log.Printf("Notification has not been sent: %v", err)
+				}
+			}
+		}
+
 	} else {
 		panic(fmt.Sprintf("%s is an unsupported method for %s", r.Method, r.URL.Path))
 	}
 }
 
 // Starting the HTTP server
-func Start(port *int, bind_addr *string, maxMemMB *int, getProvider func() provider.Provider) {
+func Start(port *int, bind_addr *string, maxMemMB *int, getProvider func() provider.Provider, getNotifiers []func() notifier.Notifier) {
 	maxMemoryBuffer = int64((*maxMemMB) << 20)
 	getProv = getProvider
+	getNotifs = getNotifiers
 
 	log.Printf("Starting http server on %s:%d using provider %s - Memory per buffer per file: %d MiB\n", *bind_addr, *port, getProv(), *maxMemMB)
 

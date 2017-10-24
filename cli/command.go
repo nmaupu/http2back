@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"github.com/jawher/mow.cli"
+	"github.com/nmaupu/http2back/notifier"
 	"github.com/nmaupu/http2back/provider"
 	"github.com/nmaupu/http2back/server"
 	"os"
@@ -11,6 +12,7 @@ import (
 var (
 	addr           *string
 	port, maxmemmb *int
+	notif          notifier.Datadog
 )
 
 func Process(appName, appDesc, appVersion string) {
@@ -21,6 +23,17 @@ func Process(appName, appDesc, appVersion string) {
 	port = app.IntOpt("p port", 8080, "Port to listen connections from")
 	maxmemmb = app.IntOpt("m maxmemmb", 8, "Max memory allocated (MiB) for buffering a file to the backend")
 
+	notif.ApiKey = app.String(cli.StringOpt{
+		Name:   "apikey",
+		Desc:   "Datadog api key to send notification (Env: DATADOG_API_KEY)",
+		EnvVar: "DATADOG_API_KEY",
+	})
+	notif.AppKey = app.String(cli.StringOpt{
+		Name:   "y appkey",
+		Desc:   "Datadog app key to send notification (Env: DATADOG_APP_KEY)",
+		EnvVar: "DATADOG_APP_KEY",
+	})
+
 	app.Command("filesystem fs", "Use filesystem provider", providerFilesystem)
 	app.Command("ftp", "Use FTP provider", providerFtp)
 	app.Command("dropbox d", "Use Dropbox provider", providerDropbox)
@@ -29,13 +42,24 @@ func Process(appName, appDesc, appVersion string) {
 	app.Run(os.Args)
 }
 
+func getNotifier() notifier.Notifier {
+	if notif.ApiKey != nil && *notif.ApiKey != "" {
+		return notif
+	} else {
+		return nil
+	}
+}
+
 func providerFilesystem(cmd *cli.Cmd) {
 	dest := cmd.StringOpt("d dest", "/tmp", "Destination directory where to drop files into")
 
 	cmd.Action = func() {
-		server.Start(port, addr, maxmemmb, func() provider.Provider {
-			return provider.Filesystem{DestDir: *dest}
-		})
+		server.Start(port, addr, maxmemmb,
+			func() provider.Provider {
+				return provider.Filesystem{DestDir: *dest}
+			},
+			[]func() notifier.Notifier{getNotifier},
+		)
 	}
 }
 
@@ -58,14 +82,17 @@ func providerFtp(cmd *cli.Cmd) {
 	})
 
 	cmd.Action = func() {
-		server.Start(port, addr, maxmemmb, func() provider.Provider {
-			return provider.Ftp{
-				Addr:     *ftpAddr,
-				Username: *username,
-				Password: *password,
-				DestDir:  *dest,
-			}
-		})
+		server.Start(port, addr, maxmemmb,
+			func() provider.Provider {
+				return provider.Ftp{
+					Addr:     *ftpAddr,
+					Username: *username,
+					Password: *password,
+					DestDir:  *dest,
+				}
+			},
+			[]func() notifier.Notifier{getNotifier},
+		)
 	}
 }
 
@@ -79,12 +106,15 @@ func providerDropbox(cmd *cli.Cmd) {
 	})
 
 	cmd.Action = func() {
-		server.Start(port, addr, maxmemmb, func() provider.Provider {
-			return provider.Dropbox{
-				DestDir:     *dest,
-				AccessToken: *accessToken,
-			}
-		})
+		server.Start(port, addr, maxmemmb,
+			func() provider.Provider {
+				return provider.Dropbox{
+					DestDir:     *dest,
+					AccessToken: *accessToken,
+				}
+			},
+			[]func() notifier.Notifier{getNotifier},
+		)
 	}
 }
 
@@ -121,18 +151,21 @@ func providerAwsS3(cmd *cli.Cmd) {
 	})
 
 	cmd.Action = func() {
-		server.Start(port, addr, maxmemmb, func() provider.Provider {
-			return provider.AwsS3{
-				Bucket:             *bucket,
-				DestDir:            *dest,
-				Region:             *region,
-				AwsAccessKeyId:     *key,
-				AwsSecretAccessKey: *secret,
-				Token:              *token,
-				Endpoint:           *endpoint,
-				DisableSSL:         *disableSSL,
-				DisableCertCheck:   *disableCertCheck,
-			}
-		})
+		server.Start(port, addr, maxmemmb,
+			func() provider.Provider {
+				return provider.AwsS3{
+					Bucket:             *bucket,
+					DestDir:            *dest,
+					Region:             *region,
+					AwsAccessKeyId:     *key,
+					AwsSecretAccessKey: *secret,
+					Token:              *token,
+					Endpoint:           *endpoint,
+					DisableSSL:         *disableSSL,
+					DisableCertCheck:   *disableCertCheck,
+				}
+			},
+			[]func() notifier.Notifier{getNotifier},
+		)
 	}
 }
