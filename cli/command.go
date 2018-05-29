@@ -2,11 +2,12 @@ package cli
 
 import (
 	"fmt"
-	"github.com/jawher/mow.cli"
-	"github.com/nmaupu/http2back/notifier"
-	"github.com/nmaupu/http2back/provider"
-	"github.com/nmaupu/http2back/server"
 	"os"
+
+	"github.com/jawher/mow.cli"
+	"github.com/mirakl/http2back/notifier"
+	"github.com/mirakl/http2back/provider"
+	"github.com/mirakl/http2back/server"
 )
 
 var (

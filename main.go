@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/nmaupu/http2back/cli"
+	"github.com/mirakl/http2back/cli"
 )
 
 const (

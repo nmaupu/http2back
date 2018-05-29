@@ -1,8 +1,8 @@
-hash: 9b39bda4829afe210b5efc478a52bdd0ed0c8fe21dcb26127c63ef54c57a0b67
-updated: 2017-10-24T15:21:24.249087465+02:00
+hash: f19efb0b70e0d532fbab86f35acf17f7adce2efad1f14f003d64721f8413b534
+updated: 2018-05-29T16:48:09.464304+02:00
 imports:
 - name: github.com/aws/aws-sdk-go
-  version: 209e63d002840d9ed94159e6639216a53b7cc28b
+  version: 854f9d07a932452f1552955e127e50ba5ebb25cc
   subpackages:
   - aws
   - aws/awserr
@@ -20,6 +20,8 @@ imports:
   - aws/request
   - aws/session
   - aws/signer/v4
+  - internal/sdkio
+  - internal/sdkrand
   - internal/shareddefaults
   - private/protocol
   - private/protocol/query
@@ -36,7 +38,15 @@ imports:
 - name: github.com/go-ini/ini
   version: c787282c39ac1fc618827141a1f762240def08a3
 - name: github.com/jawher/mow.cli
-  version: 89bd73e5017374498afb615659500c3559ff42b3
+  version: 2f22195f169da29d54624afd9eb83ada5c9e4ee9
+  subpackages:
+  - internal/container
+  - internal/flow
+  - internal/fsm
+  - internal/lexer
+  - internal/matcher
+  - internal/parser
+  - internal/values
 - name: github.com/jlaffaye/ftp
   version: 299b7ff5b6096588cceca2edc1fc9f557002fb85
 - name: github.com/jmespath/go-jmespath
@@ -44,7 +54,7 @@ imports:
 - name: github.com/tj/go-dropbox
   version: 2de702dc3e925adbf993ddd2192cebd7a24ae1a1
 - name: github.com/zorkian/go-datadog-api
-  version: 6db99b254ab9c82020abcdc8f702f6075f438603
+  version: d74ca17e47a9d3708e6203fd48d3f8cdad055e1c
 - name: golang.org/x/net
   version: 4b14673ba32bee7f5ac0f990a48f033919fd418b
   subpackages:
