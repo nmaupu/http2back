@@ -33,6 +33,11 @@ func Process(appName, appDesc, appVersion string) {
 		Desc:   "Datadog app key to send notification (Env: DATADOG_APP_KEY)",
 		EnvVar: "DATADOG_APP_KEY",
 	})
+	notif.ExtraTag = app.String(cli.StringOpt{
+		Name:   "x extratag",
+		Desc:   "Datadog event extra tag (Env: EXTRA_TAG)",
+		EnvVar: "EXTRA_TAG",
+	})
 
 	app.Command("filesystem fs", "Use filesystem provider", providerFilesystem)
 	app.Command("ftp", "Use FTP provider", providerFtp)

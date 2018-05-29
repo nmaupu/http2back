@@ -14,13 +14,15 @@ var (
 )
 
 type Datadog struct {
-	ApiKey, AppKey *string
+	ApiKey, AppKey, ExtraTag *string
 }
 
 func (d Datadog) Notify(event *Event) error {
 	if d.ApiKey == nil || *d.ApiKey == "" {
 		return errors.New("Cannot send event to Datadog, api key is not defined")
 	}
+
+	tags = append(tags, *d.ExtraTag)
 
 	client := datadog.NewClient(*d.ApiKey, *d.AppKey)
 	_, err := client.PostEvent(&datadog.Event{
