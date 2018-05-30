@@ -18,7 +18,7 @@ Requirements :
 - glide
 
 ```
-git clone https://github.com/nmaupu/http2back
+git clone https://github.com/mirakl/http2back
 cd http2back
 glide install && make
 ```

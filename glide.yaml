@@ -1,4 +1,4 @@
-package: github.com/nmaupu/http2back
+package: github.com/mirakl/http2back
 import:
 - package: github.com/jawher/mow.cli
   version: ^1.0.2
