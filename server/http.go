@@ -59,7 +59,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 
 		// Unique filename
 		t := time.Now()
-		name := fmt.Sprintf("%s%s-%s.%06d", extradir, handler.Filename, t.Format("20060102_150405"), rand.Intn(100000))
+		name := fmt.Sprintf("%s%s-%06d.%s", extradir, t.Format("20060102_150405"), rand.Intn(100000), handler.Filename)
 		ret := getProv().Copy(in, name)
 
 		// Send result
